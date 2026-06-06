@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LifeLens AI Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="scene" aria-hidden="true">
+      <div class="pulse pulse-a"></div>
+      <div class="pulse pulse-b"></div>
+      <div class="grid-sky"></div>
+    </div>
+
+    <main class="shell">
+      <section class="hero">
+        <div class="brand-mark" aria-label="LifeLens AI">
+          <span class="orbit"></span>
+          <span class="core">AI</span>
+        </div>
+        <div>
+          <p class="eyebrow">XGBoost regression dashboard</p>
+          <h1>LifeLens AI</h1>
+          <p class="lead">
+            Web prediksi harapan hidup berbasis model machine learning dari notebook project ini.
+            Isi indikator negara, lalu model akan memperkirakan usia harapan hidup.
+          </p>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form id="predictForm" class="panel form-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Input data</p>
+              <h2>Simulasi Negara</h2>
+            </div>
+            <button class="ghost-button" type="button" id="fillIndonesia">Isi Indonesia</button>
+          </div>
+
+          <div class="identity-row">
+            <label>
+              <span>Negara</span>
+              <select name="Country">
+                {% for country in countries %}
+                  <option value="{{ country }}" {% if country == "Indonesia" %}selected{% endif %}>{{ country }}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <label>
+              <span>Status</span>
+              <select name="Status">
+                {% for status in statuses %}
+                  <option value="{{ status }}" {% if status == "Developing" %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+              </select>
+            </label>
+          </div>
+
+          <div class="fields">
+            {% for name, label, value, min, max, step in fields %}
+              <label class="field">
+                <span>{{ label }}</span>
+                <input name="{{ name }}" type="number" value="{{ value }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" />
+              </label>
+            {% endfor %}
+          </div>
+
+          <button class="primary-button" type="submit">
+            <span class="button-glow"></span>
+            Prediksi Harapan Hidup
+          </button>
+        </form>
+
+        <aside class="panel result-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Output model</p>
+              <h2>Hasil Prediksi</h2>
+            </div>
+            <span class="status-pill" id="category">Siap</span>
+          </div>
+
+          <div class="meter">
+            <svg viewBox="0 0 140 140" role="img" aria-label="Meter prediksi">
+              <circle class="track" cx="70" cy="70" r="56"></circle>
+              <circle class="progress" id="progressRing" cx="70" cy="70" r="56"></circle>
+            </svg>
+            <div class="meter-copy">
+              <strong id="prediction">--</strong>
+              <span>tahun</span>
+            </div>
+          </div>
+
+          <div class="insight-strip">
+            <div>
+              <span>{{ rows }}</span>
+              <small>baris data</small>
+            </div>
+            <div>
+              <span>{{ columns }}</span>
+              <small>kolom</small>
+            </div>
+            <div>
+              <span>XGB</span>
+              <small>model</small>
+            </div>
+          </div>
+
+          <div class="mini-section">
+            <h3>Fitur Paling Berpengaruh</h3>
+            <div class="bars" id="featureBars">
+              {% for feature in top_features %}
+                <div class="bar-row">
+                  <span>{{ feature.feature.strip() }}</span>
+                  <div><i style="width: {{ (feature.importance * 100)|round(1) }}%"></i></div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="mini-section">
+            <h3>Rekomendasi</h3>
+            <ul id="recommendations">
+              <li>Jalankan prediksi untuk melihat saran berbasis median data latih.</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
