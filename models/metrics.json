@@ -1,0 +1,9 @@
+{
+  "model": "XGBRegressor",
+  "r2_score": 0.9562235275976557,
+  "rmse": 2.054114092174033,
+  "mae": 1.3344873318445825,
+  "train_rows": 2350,
+  "test_rows": 588,
+  "feature_count": 21
+}
